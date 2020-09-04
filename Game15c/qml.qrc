@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>MixButton.qml</file>
+        <file>Block.qml</file>
+        <file>BlockDelegate.qml</file>
+        <file>Board.qml</file>
+    </qresource>
+</RCC>
