@@ -79,7 +79,7 @@ bool GameModel::move(int oldP)
     return false;
 }
 
-bool GameModel::checkWin()
+bool GameModel::checkWin() const
 {
     int gridSqrdSize = m_gridSize * m_gridSize;
 
@@ -91,7 +91,7 @@ bool GameModel::checkWin()
     return true;
 }
 
-int GameModel::findVoidCellId(int oldPos)
+int GameModel::findVoidCellId(int oldPos) const
 {
     int newPos = -1;
     int gridSqrdSize = m_gridSize * m_gridSize;
@@ -116,12 +116,11 @@ int GameModel::findVoidCellId(int oldPos)
     return newPos;
 }
 
-bool GameModel::checkIsValid()
+bool GameModel::checkIsValid() const
 {   
     int e = 0;
     int summ = 0;
     int gridSqrdSize = m_gridSize * m_gridSize;
-
 
     for(int i = 0; i < gridSqrdSize; i++){
         if(m_data.at(i)->getNumber() == gridSqrdSize){
@@ -136,7 +135,7 @@ bool GameModel::checkIsValid()
     }
     summ += e;
 
-    return m_gridSize % 2 ? !((summ - e) % 2) : (summ % 2);
+    return m_gridSize % 2 ? !((summ - e) % 2) : (summ % 2); //different rules for odd and even grid size
 }
 
 

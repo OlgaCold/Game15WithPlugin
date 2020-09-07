@@ -18,9 +18,9 @@ Rectangle {
     border.color: "#8b4513"
 
     MouseArea {
-            id: mouseArea
-            anchors.fill: parent
-            onClicked: root.clicked()
+        id: mouseArea
+        anchors.fill: parent
+        onClicked: root.clicked()
     }
 
     Text {
@@ -30,7 +30,6 @@ Rectangle {
         anchors.horizontalCenter: parent.horizontalCenter
 
         font.pixelSize: 26
-        text: ""
         color: "#8b4513"
     }
 }

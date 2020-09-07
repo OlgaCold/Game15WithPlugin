@@ -3,8 +3,6 @@
 #include <QAbstractListModel>
 #include <QObject>
 #include <cmath>
-#include <iostream>
-#include <cstdlib>
 
 #include "block.h"
 
@@ -36,8 +34,8 @@ private:
     int m_gridSize;
     QList<Block*> m_data;
 
-    bool checkWin();
-    bool checkIsValid();
-    int findVoidCellId(int oldPos);  
+    bool checkWin() const;
+    bool checkIsValid() const;
+    int findVoidCellId(int oldPos) const;
     void shuffle();
 };

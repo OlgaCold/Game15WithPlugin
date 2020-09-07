@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 2.9
 
 Rectangle {
 
@@ -15,6 +15,5 @@ Rectangle {
         anchors.centerIn: parent
         color: isVoid ? "transparent" : "black"
         font.pixelSize: 35
-        text: ""
     }
 }

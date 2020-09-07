@@ -9,9 +9,8 @@ class Block : public QObject
 public:
     explicit Block(QObject *parent = nullptr, int m_number = 0, bool state = false);
 
-    int getNumber() ;
-    void setNumber(int num);
-    bool getState() ;
+    int getNumber() const;
+    bool getState() const;
     void setState(bool state);
 
 private:

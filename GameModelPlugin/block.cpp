@@ -5,9 +5,9 @@ Block::Block(QObject *parent, int number, bool state) :
 {
 }
 
-void Block::setNumber(int num)
+int Block::getNumber() const
 {
-    m_number = num;
+    return m_number;
 }
 
 void Block::setState(bool state)
@@ -15,12 +15,10 @@ void Block::setState(bool state)
     m_isVoid = state;
 }
 
-int Block::getNumber()
-{
-    return m_number;
-}
-
-bool Block::getState()
+bool Block::getState() const
 {
     return m_isVoid;
 }
+
+
+
