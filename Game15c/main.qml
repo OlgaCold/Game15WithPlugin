@@ -41,6 +41,8 @@ ApplicationWindow {
             id: blockDelegate
             width: parent.width/items.gridSize
             height: width
+            text: model.display
+            isVoid: model.isvoid
 
             onClicked: {
                 if(items.move(oldP)){

@@ -1,20 +1,25 @@
 #include "gamemodel.h"
 
 GameModel::GameModel(QObject *parent)
-    : QAbstractListModel(parent), gridSize(GRID_SIZE)
+    : QAbstractListModel(parent), m_gridSize(GRID_SIZE)
 {
-    for(int i = 0; i < gridSize*gridSize; i++){
-        m_data.append(new Block(i + 1, false));
+    for(int i = 0; i < m_gridSize*m_gridSize; i++){
+        m_data.append(new Block(nullptr, i + 1, false));
     }
-    m_data.at(gridSize*gridSize - 1)->setState(true);
+    m_data.at(m_gridSize*m_gridSize - 1)->setState(true);
+    mix();
+}
+
+GameModel::~GameModel()
+{
+    for (int i = 0; i < m_data.size(); i++){
+        delete (m_data.takeAt(i));
+    }
 }
 
 int GameModel::rowCount(const QModelIndex &parent) const
 {
-    if (parent.isValid())
-        return 0;
-
-    return m_data.count();
+    return parent.isValid() ? 0 : m_data.count();
 }
 
 QVariant GameModel::data(const QModelIndex &index, int role) const
@@ -33,51 +38,50 @@ QVariant GameModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
+
 QHash<int, QByteArray> GameModel::roleNames() const
 {
-    QHash<int, QByteArray> blocks;
-    blocks[DisplayRole] = "display";
-    blocks[IsVoidRole] = "isvoid";
-    return blocks;
+    return { { DisplayRole, "display" },
+        { IsVoidRole, "isvoid" },
+    };
 }
 
 void GameModel::mix()
 {
-    do{ GameModel::shuffle(); }
-    while( !GameModel::checkIsValid() );
+    do{ shuffle(); }
+    while( !checkIsValid() );
 }
+
 
 bool GameModel::move(int oldP)
 {
     int newP;
 
-    if(GameModel::findVoidCellId(oldP) != -1) {
+    if(findVoidCellId(oldP) != -1) {
 
         newP = findVoidCellId(oldP);
 
         int min = oldP < newP ? oldP : newP;
         int max = oldP < newP ? newP : oldP;
 
-        emit beginMoveRows(QModelIndex(), min, min, QModelIndex(), max + 1);//max + 1
+        emit beginMoveRows(QModelIndex(), min, min, QModelIndex(), max + 1);
         m_data.move(min, max);
         emit endMoveRows();
 
         if(max - 1 != min) {
-            emit beginMoveRows(QModelIndex(), max - 1, max - 1, QModelIndex(), min);//max - 1
+            emit beginMoveRows(QModelIndex(), max - 1, max - 1, QModelIndex(), min);
             m_data.move(max - 1, min);
             emit endMoveRows();
         }
 
-        if(GameModel::checkWin()){
-            return true;
-        }
+        return checkWin();
     }
     return false;
 }
 
 bool GameModel::checkWin()
 {
-    int gridSqrdSize = gridSize * gridSize;
+    int gridSqrdSize = m_gridSize * m_gridSize;
 
     for(int i = 0; i < gridSqrdSize; i++) {
         if(i != m_data.at(i)->getNumber() - 1){
@@ -90,11 +94,11 @@ bool GameModel::checkWin()
 int GameModel::findVoidCellId(int oldPos)
 {
     int newPos = -1;
-    int gridSqrdSize = gridSize * gridSize;
+    int gridSqrdSize = m_gridSize * m_gridSize;
     int tempL = oldPos - 1;
     int tempR = oldPos + 1;
-    int tempD = oldPos - gridSize;
-    int tempU = oldPos + gridSize;
+    int tempD = oldPos - m_gridSize;
+    int tempU = oldPos + m_gridSize;
 
     if(tempL > -1 && tempL < gridSqrdSize && m_data.at(tempL)->getNumber() == gridSqrdSize) {
         newPos = tempL;
@@ -113,13 +117,18 @@ int GameModel::findVoidCellId(int oldPos)
 }
 
 bool GameModel::checkIsValid()
-{
+{   
+    int e = 0;
     int summ = 0;
-    int e = gridSize;
-    int gridSqrdSize = gridSize * gridSize;
+    int gridSqrdSize = m_gridSize * m_gridSize;
 
-    for(int i = 0; i < gridSqrdSize - 1; i++){
-        for(int j = i + 1; j < gridSqrdSize - 1; j++){
+
+    for(int i = 0; i < gridSqrdSize; i++){
+        if(m_data.at(i)->getNumber() == gridSqrdSize){
+            e = m_gridSize - floor(i / m_gridSize);
+            continue;
+        }
+        for(int j = i + 1; j < gridSqrdSize; j++){
             if(m_data.at(i)->getNumber() > m_data.at(j)->getNumber()){
                 summ += 1;
             }
@@ -127,13 +136,14 @@ bool GameModel::checkIsValid()
     }
     summ += e;
 
-    return !(summ % 2);
+    return m_gridSize % 2 ? !((summ - e) % 2) : (summ % 2);
 }
+
 
 void GameModel::shuffle()
 {
     int temporaryValue;
-    int gridSqrdSize = gridSize * gridSize;
+    int gridSqrdSize = m_gridSize * m_gridSize;
 
     int min;
     int max;
@@ -141,7 +151,7 @@ void GameModel::shuffle()
     emit beginResetModel();
 
     for(int ind = gridSqrdSize - 1; ind > 0; ind--){
-        temporaryValue = ceil(rand() % (ind + 1));//ind?
+        temporaryValue = ceil(rand() % (ind + 1));
         min = ind < temporaryValue ? ind : temporaryValue;
         max = ind < temporaryValue ? temporaryValue : ind;
 
@@ -152,35 +162,3 @@ void GameModel::shuffle()
     }
     emit endResetModel();
 }
-
-/*bool GameModel::setData(const QModelIndex &index, const QVariant &value, int role)
-{
-    if (data(index, role) != value) {
-        // FIXME: Implement me!
-        emit dataChanged(index, index, QVector<int>() << role);
-        return true;
-    }
-    return false;
-}*/
-
-/*Qt::ItemFlags GameModel::flags(const QModelIndex &index) const
-{
-    if (!index.isValid())
-        return Qt::NoItemFlags;
-
-    return Qt::ItemIsEditable; // FIXME: Implement me!
-}*/
-
-/*bool GameModel::insertRows(int row, int count, const QModelIndex &parent)
-{
-    beginInsertRows(parent, row, row + count - 1);
-    // FIXME: Implement me!
-    endInsertRows();
-}
-
-bool GameModel::removeRows(int row, int count, const QModelIndex &parent)
-{
-    beginRemoveRows(parent, row, row + count - 1);
-    // FIXME: Implement me!
-    endRemoveRows();
-}*/

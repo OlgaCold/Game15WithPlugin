@@ -1,29 +1,26 @@
 #include "block.h"
 
-Block::Block( QObject *parent) : QObject(parent)
+Block::Block(QObject *parent, int number, bool state) :
+    QObject(parent), m_number(number), m_isVoid(state)
 {
 }
 
 void Block::setNumber(int num)
 {
-    number = num;
+    m_number = num;
 }
 
 void Block::setState(bool state)
 {
-    isVoid = state;
-}
-
-Block::Block(int number, bool state) : number(number), isVoid(state)
-{
+    m_isVoid = state;
 }
 
 int Block::getNumber()
 {
-    return number;
+    return m_number;
 }
 
 bool Block::getState()
 {
-    return isVoid;
+    return m_isVoid;
 }

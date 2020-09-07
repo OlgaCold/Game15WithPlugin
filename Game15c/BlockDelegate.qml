@@ -6,6 +6,8 @@ Item {
     id: root
 
     property alias oldP: mouseArea.oldPosition
+    property alias text: item.text
+    property alias isVoid: item.isVoid
 
     signal clicked
 
@@ -16,8 +18,6 @@ Item {
 
         width: root.width - 10
         height: root.height - 10
-        text: model.display
-        isVoid: model.isvoid
     }
 
     MouseArea {

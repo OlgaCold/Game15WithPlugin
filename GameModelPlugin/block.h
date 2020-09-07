@@ -1,5 +1,4 @@
-#ifndef BLOCK_H
-#define BLOCK_H
+#pragma once
 
 #include <QObject>
 
@@ -8,21 +7,14 @@ class Block : public QObject
     Q_OBJECT
 
 public:
-    explicit Block( QObject *parent = nullptr);
-    Block(int number, bool state);
+    explicit Block(QObject *parent = nullptr, int m_number = 0, bool state = false);
 
     int getNumber() ;
     void setNumber(int num);
     bool getState() ;
     void setState(bool state);
-signals:
-
-
-public slots:
 
 private:
-    int number;
-    bool isVoid;
+    int m_number;
+    bool m_isVoid;
 };
-
-#endif // BLOCK_H
