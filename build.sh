@@ -23,11 +23,11 @@ fi
 cd build
 
 echo "Building plugin ..."
-$QMAKE_EXEC ../GameModelPlugin
-make -j4
+$QMAKE_EXEC ../GameModelPlugin 2>&1 >/dev/null
+make -j4 2>&1 >/dev/null
 
 echo "Building application ..."
-$QMAKE_EXEC ../Game15c
-make -j4
+$QMAKE_EXEC ../Game15c 2>&1 >/dev/null
+make -j4 2>&1 >/dev/null
 
 echo "Done"

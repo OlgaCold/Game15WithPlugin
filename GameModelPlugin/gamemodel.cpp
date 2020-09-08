@@ -4,7 +4,7 @@ GameModel::GameModel(QObject *parent)
     : QAbstractListModel(parent), m_gridSize(GRID_SIZE)
 {
     for(int i = 0; i < m_gridSize*m_gridSize; i++){
-        m_data.append(new Block(nullptr, i + 1, false));
+        m_data.append(new Block(this, i + 1, false));
     }
     m_data.at(m_gridSize*m_gridSize - 1)->setState(true);
     mix();
